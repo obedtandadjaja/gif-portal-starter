@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import twitterLogo from './assets/twitter-logo.svg';
 import './App.css';
 
@@ -7,6 +7,8 @@ const TWITTER_HANDLE = '_buildspace';
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
 const App = () => {
+  const [walletAddress, setWalletAddress] = useState(null);
+
   const checkIfWalletIsConnected = async () => {
     try {
       const {solana} = window;
@@ -27,6 +29,8 @@ const App = () => {
             'Connected with Public Key:',
             response.publicKey.toString(),
           );
+
+          setWalletAddress(response.publicKey.toString());
         }
       } else {
         alert('Solana object not found');
@@ -64,13 +68,13 @@ const App = () => {
 
   return (
     <div className="App">
-      <div className="container">
+      <div className={walletAddress ? 'authed-container' : 'container'}>
         <div className="header-container">
           <p className="header">🖼 GIF Portal</p>
           <p className="sub-text">
             View your GIF collection in the metaverse ✨
           </p>
-          {renderNotConnectedContainer()}
+          {!walletAddress && renderNotConnectedContainer()}
         </div>
         <div className="footer-container">
           <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
